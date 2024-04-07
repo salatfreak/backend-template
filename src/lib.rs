@@ -5,15 +5,12 @@
 
 #![warn(rust_2018_idioms, missing_docs)]
 
-use rocket::{get, routes, serde::json::{json, Value}, Build, Rocket};
+use rocket::{Build, Rocket};
+
+mod files;
 
 /// Build the rocket instance ready to be ignited and launched.
 pub fn rocket() -> Rocket<Build> {
-    rocket::build().mount("/", routes![index])
-}
-
-/// Serve some dummy JSON on the index route.
-#[get("/")]
-fn index() -> Value {
-    json![{"message": "Hello, world!"}]
+    rocket::build()
+        .attach(files::mount("static/http"))
 }
