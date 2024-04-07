@@ -7,12 +7,16 @@
 
 use rocket::{Build, Rocket};
 
+mod database;
 mod api;
 mod files;
 
 /// Build the rocket instance ready to be ignited and launched.
 pub fn rocket() -> Rocket<Build> {
     rocket::build()
+        .attach(database::mount(
+            "localhost:8080", "root", "root", "backend", "backend"
+        ))
         .attach(api::mount())
         .attach(files::mount("static/http"))
 }
