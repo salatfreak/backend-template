@@ -26,5 +26,16 @@ version = "0.2"
 version = "1"
 features = ["fs"]
 
+[dependencies.utoipa]
+version = "4.2"
+features = ["rocket_extras"]
+
+[dependencies.utoipa-rapidoc]
+version = "3.0"
+features = ["rocket"]
+
+[dependencies.serde_json]
+version = "1.0"
+
 [dependencies.thiserror]
 version = "1.0"

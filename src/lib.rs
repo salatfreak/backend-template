@@ -10,6 +10,7 @@ use rocket::{Build, Rocket};
 mod database;
 mod mail;
 mod api;
+mod doc;
 mod files;
 
 /// Build the rocket instance ready to be ignited and launched.
@@ -23,5 +24,6 @@ pub fn rocket() -> Rocket<Build> {
             "static/mail".into(),
         ))
         .attach(api::mount())
+        .attach(doc::mount())
         .attach(files::mount("static/http"))
 }
