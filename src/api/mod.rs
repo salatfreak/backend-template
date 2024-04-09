@@ -1,7 +1,10 @@
 //! Hierarchy of API routes.
 
 use crate::database::{Database, Id};
-use rocket::{fairing::AdHoc, get, http::Status, post, routes, serde::json::Json};
+use crate::mail::Mail;
+use rocket::{
+    fairing::AdHoc, get, http::Status, post, routes, serde::json::Json
+};
 use serde::{Deserialize, Serialize};
 
 pub fn mount() -> AdHoc {
@@ -40,9 +43,19 @@ struct NewUser {
 
 #[post("/", data = "<data>")]
 async fn create(
-    db: &Database, data: Json<NewUser>,
+    db: &Database, mailer: &Mail, data: Json<NewUser>,
 ) -> Status {
+    // create entry
     db.create::<Vec<User>>("user").content(data.into_inner()).await
         .expect("error creating user");
+
+    // send email
+    let email = mailer
+        .template("verify-account", &[("token", "<supersecret>")])
+        .await.expect("error loading email template");
+    mailer.send("test@example.com", email)
+        .await.expect("error sending email");
+
+    // return created status
     Status::Created
 }
