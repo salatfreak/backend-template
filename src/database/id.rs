@@ -6,8 +6,8 @@ use surrealdb::sql::{self, Thing};
 use utoipa::{openapi::{ObjectBuilder, RefOr, Schema, SchemaType}, ToSchema};
 
 /// Type to deserialize SurrealDB Thing and serialize it as string or integer.
-#[derive(Serialize)]
-pub struct Id<T: Serialize>(T);
+#[derive(Debug, Serialize)]
+pub struct Id<T: Serialize>(pub T);
 
 impl<'de> Deserialize<'de> for Id<String> {
     fn deserialize<D>(
