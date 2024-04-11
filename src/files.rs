@@ -8,11 +8,10 @@ use rocket::{
     route::{self, Outcome},
     Catcher, Data, Request, Response, Route,
 };
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 /// Mount static file routes and error handlers to rocket instance.
-pub fn mount(path: &str) -> AdHoc {
-    let path = Path::new(path);
+pub fn mount(path: PathBuf) -> AdHoc {
     let index = path.join("index.html");
     let assets = path.join("assets");
     let not_found = path.join("not_found.html");

@@ -1,0 +1,14 @@
+[debug.database]
+host = "localhost:8080"
+username = "root"
+password = "root"
+
+[debug.mail]
+url = "smtp://localhost:2525"
+from = "backend@example.com"
+
+[debug.files]
+path = "static"
+
+[debug.openapi]
+enable = true

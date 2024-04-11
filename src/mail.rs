@@ -11,14 +11,17 @@ use rocket::{error, fairing::AdHoc, State};
 use std::path::PathBuf;
 use tokio::{fs, io};
 
+use crate::config::MailConfig;
+
 /// Type alias for abbreviation in route handlers.
 pub type Mail = State<Mailer>;
 
 /// Create and mount mailer to the rocket instance.
-pub fn mount(
-    url: &str, pool_size: u32, from: &str, templates: PathBuf
-) -> AdHoc {
-    let conn = Mailer::new(url, pool_size, from, templates);
+pub fn mount(config: MailConfig, templates: PathBuf) -> AdHoc {
+    let conn = Mailer::new(
+        &config.url, config.pool_size, &config.from, templates
+    );
+
     AdHoc::try_on_ignite("SMTP Mailer", |rocket| async {
         match conn {
             Ok(conn) => Ok(rocket.manage(conn)),
