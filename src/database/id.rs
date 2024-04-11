@@ -54,3 +54,9 @@ impl<'r> ToSchema<'r> for Id<i64> {
         )
     }
 }
+
+impl<S, T: Serialize + PartialEq<S>> PartialEq<S> for Id<T> {
+    fn eq(&self, other: &S) -> bool {
+        self.0.eq(other)
+    }
+}
