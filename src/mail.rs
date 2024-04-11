@@ -31,11 +31,11 @@ pub fn mount(
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("invalid email address")]
-    Address{ #[from] source: AddressError },
+    Address { #[from] source: AddressError },
     #[error("invalid email format")]
-    Email{ #[from] source: lettre::error::Error },
+    Email { #[from] source: lettre::error::Error },
     #[error("SMTP error")]
-    Smtp{ #[from] source: smtp::Error },
+    Smtp { #[from] source: smtp::Error },
     #[error("error loading template")]
     IO { #[from] source: io::Error }
 }
