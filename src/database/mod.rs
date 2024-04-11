@@ -7,6 +7,7 @@ use surrealdb::{
     Surreal,
 };
 
+mod migrations;
 mod id;
 pub mod login;
 
@@ -34,6 +35,12 @@ pub fn mount(config: DatabaseConfig) -> AdHoc {
                 return Err(rocket)
             }
         };
+
+        // apply migrations
+        if let Err(err) = migrations::apply(&db).await {
+            error!("SurrealDB migrations: {:?}", err);
+            return Err(rocket)
+        }
 
         // add database to rocket instance
         Ok(rocket.manage(db))
