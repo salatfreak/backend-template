@@ -5,7 +5,10 @@ use rocket::{
     route::{Handler, Outcome},
     Data, Request, Route,
 };
-use utoipa::OpenApi;
+use utoipa::{
+    openapi::{self, security::{ApiKey, ApiKeyValue, SecurityScheme}},
+    Modify, OpenApi,
+};
 use utoipa_rapidoc::RapiDoc;
 
 use crate::{api, database};
@@ -38,9 +41,22 @@ pub fn mount() -> AdHoc {
             "Interactive API documentation.",
     ),
     paths(api::index, api::get, api::create),
-    components(schemas(api::User, api::NewUser, database::Id<String>)),
+    components(schemas(api::UserOut, api::UserIn, database::Id<String>)),
+    modifiers(&LoginToken),
 )]
 struct ApiDoc;
+
+/// Login token modifier.
+struct LoginToken;
+impl Modify for LoginToken {
+    fn modify(&self, openapi: &mut openapi::OpenApi) {
+        let key = ApiKey::Header(ApiKeyValue::with_description(
+            "authorization", "API token prefixed with \"apikey \"",
+        ));
+        openapi.components.as_mut().expect("error extracting components")
+            .add_security_scheme("login", SecurityScheme::ApiKey(key));
+    }
+}
 
 /// Raw JSON handler for serving rendered OpenAPI documentation.
 #[derive(Clone)]

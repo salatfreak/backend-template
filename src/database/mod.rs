@@ -8,6 +8,7 @@ use surrealdb::{
 };
 
 mod id;
+pub mod login;
 
 pub use id::Id;
 

@@ -1,5 +1,6 @@
 //! Hierarchy of API routes.
 
+use crate::database::login::{Admin, Login, Owner, User};
 use crate::database::{Database, Id};
 use crate::mail::Mail;
 use rocket::{
@@ -15,7 +16,7 @@ pub fn mount() -> AdHoc {
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct User {
+pub struct UserOut {
     id: Id<String>,
     #[schema(example = "Alice")]
     name: String,
@@ -26,13 +27,16 @@ pub struct User {
 #[utoipa::path(
     context_path = "/api",
     responses(
-        (status = 200, description = "List of users", body = Vec<User>),
-    )
+        (status = 200, description = "List of users", body = Vec<UserOut>),
+        (status = 401, description = "Invalid login session"),
+        (status = 403, description = "Insufficient privileges"),
+    ),
+    security(("login" = [])),
 )]
 
 #[get("/")]
-async fn index(db: &Database) -> Json<Vec<User>> {
-    let users: Vec<User> = db.select("user").await
+async fn index(_user: Login<Admin>, db: &Database) -> Json<Vec<UserOut>> {
+    let users: Vec<UserOut> = db.select("user").await
         .expect("error retrieving users");
     Json(users)
 }
@@ -42,19 +46,29 @@ async fn index(db: &Database) -> Json<Vec<User>> {
     responses(
         (status = 200, description = "User object", body = User),
         (status = 404, description = "User not found"),
-    )
+        (status = 401, description = "Invalid login session"),
+        (status = 403, description = "Insufficient privileges"),
+    ),
+    security(("login" = [])),
 )]
 
 #[get("/<id>")]
-async fn get(db: &Database, id: &str) -> Result<Json<User>, Status> {
+async fn get(
+    user: Login<User>, db: &Database, id: &str
+) -> Result<Json<UserOut>, Status> {
+    // only allow reading own info if not admin
+    let authorized = user.is(Admin) || user.id == id;
+    if !authorized { return Err(Status::Forbidden); }
+
+    // fetch and return user
     match db.select(("user", id)).await.expect("error retrieving user") {
-        Some(user) => Ok(Json(user)),
+        Some(u) => Ok(Json(u)),
         None => Err(Status::NotFound),
     }
 }
 
 #[derive(Serialize, Deserialize, ToSchema)]
-pub struct NewUser {
+pub struct UserIn {
     #[schema(example = "Alice")]
     name: String,
     #[schema(example = 42)]
@@ -63,18 +77,22 @@ pub struct NewUser {
 
 #[utoipa::path(
     context_path = "/api",
-    request_body = NewUser,
+    request_body = UserIn,
     responses(
         (status = 201, description = "User created"),
-    )
+        (status = 401, description = "Invalid login session"),
+        (status = 403, description = "Insufficient privileges"),
+    ),
+    security(("login" = [])),
 )]
 
 #[post("/", data = "<data>")]
 async fn create(
-    db: &Database, mailer: &Mail, data: Json<NewUser>,
+    _user: Login<Owner>,
+    db: &Database, mailer: &Mail, data: Json<UserIn>,
 ) -> Status {
     // create entry
-    db.create::<Vec<User>>("user").content(data.into_inner()).await
+    db.create::<Vec<UserOut>>("user").content(data.into_inner()).await
         .expect("error creating user");
 
     // send email
