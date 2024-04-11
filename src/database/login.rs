@@ -67,7 +67,7 @@ impl <'r, R: Role> FromRequest<'r> for Login<R> {
         // get session from database
         let result: Result<Option<Login<R>>, surrealdb::Error> = db.query("
             SELECT user.id AS id, user.name AS name, user.role AS role
-            FROM ONLY login WHERE token = <uuid>$tok LIMIT 1
+            FROM ONLY login WHERE token = $tok LIMIT 1
         ").bind(("tok", token)).await.and_then(|mut r| r.take(0));
 
         // handle database errors and invalid session

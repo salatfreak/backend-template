@@ -20,8 +20,6 @@ pub struct UserOut {
     id: Id<String>,
     #[schema(example = "Alice")]
     name: String,
-    #[schema(example = 42)]
-    age: usize,
 }
 
 #[utoipa::path(
@@ -71,8 +69,6 @@ async fn get(
 pub struct UserIn {
     #[schema(example = "Alice")]
     name: String,
-    #[schema(example = 42)]
-    age: usize,
 }
 
 #[utoipa::path(
