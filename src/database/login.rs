@@ -14,6 +14,7 @@ pub struct Login<R: Role> {
     pub id: Id<String>,
     pub name: String,
     pub role: String,
+    pub token: String,
     #[serde(skip)]
     phantom: PhantomData<R>,
 }
@@ -66,7 +67,7 @@ impl <'r, R: Role> FromRequest<'r> for Login<R> {
 
         // get session from database
         let result: Result<Option<Login<R>>, surrealdb::Error> = db.query("
-            SELECT user.id AS id, user.name AS name, user.role AS role
+            SELECT user.id AS id, user.name AS name, user.role AS role, token
             FROM ONLY login WHERE token = $tok LIMIT 1
         ").bind(("tok", token)).await.and_then(|mut r| r.take(0));
 

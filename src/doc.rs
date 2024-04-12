@@ -40,8 +40,15 @@ pub fn mount() -> AdHoc {
         description =
             "Interactive API documentation.",
     ),
-    paths(api::index, api::get, api::create),
-    components(schemas(api::UserOut, api::UserIn, database::Id<String>)),
+    paths(
+        api::auth::login::route, api::auth::logout::route,
+        api::users::index, api::users::get, api::users::create,
+    ),
+    components(schemas(
+        database::Id<String>,
+        api::auth::login::LoginIn, api::auth::login::LoginOut,
+        api::users::UserIn, api::users::UserOut,
+    )),
     modifiers(&LoginToken),
 )]
 struct ApiDoc;
