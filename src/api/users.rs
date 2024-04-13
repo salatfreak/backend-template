@@ -1,12 +1,12 @@
 //! User routes.
 
-use crate::database::login::{Admin, Login, Owner, User};
-use crate::database::{Database, Id};
-use crate::mail::Mail;
 use rocket::{get, http::Status, post, routes, serde::json::Json, Route};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-use validator::Validate;
+
+use crate::database::{login::{Admin, Login, Owner, User}, Database, Id};
+use crate::mail::Mail;
+use super::auth::register::RegisterIn;
 
 pub fn routes() -> Vec<Route> {
     routes![index, get, create]
@@ -14,10 +14,10 @@ pub fn routes() -> Vec<Route> {
 
 #[derive(Serialize, Deserialize, ToSchema)]
 pub struct UserOut {
-    id: Id<String>,
+    pub id: Id<String>,
 
     #[schema(example = "Alice")]
-    name: String,
+    pub name: String,
 }
 
 #[utoipa::path(
@@ -63,24 +63,9 @@ async fn get(
     }
 }
 
-#[derive(Serialize, Deserialize, Validate, ToSchema)]
-pub struct UserIn {
-    #[schema(example = "Alice")]
-    #[validate(length(min = 2))]
-    name: String,
-
-    #[schema(example = "alice@example.com")]
-    #[validate(email)]
-    email: String,
-
-    #[schema(example = "supersecret")]
-    #[validate(length(min = 8))]
-    password: String,
-}
-
 #[utoipa::path(
     context_path = "/api/users",
-    request_body = UserIn,
+    request_body = RegisterIn,
     responses(
         (status = 201, description = "User created"),
         (status = 401, description = "Invalid login session"),
@@ -92,7 +77,7 @@ pub struct UserIn {
 #[post("/", data = "<data>")]
 async fn create(
     _user: Login<Owner>,
-    db: &Database, mailer: &Mail, data: Json<UserIn>,
+    db: &Database, mailer: &Mail, data: Json<RegisterIn>,
 ) -> Status {
     // create entry
     db.create::<Vec<UserOut>>("user").content(data.into_inner()).await

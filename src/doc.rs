@@ -41,13 +41,15 @@ pub fn mount() -> AdHoc {
             "Interactive API documentation.",
     ),
     paths(
+        api::auth::register::route, api::auth::confirm::route,
         api::auth::login::route, api::auth::logout::route,
         api::users::index, api::users::get, api::users::create,
     ),
     components(schemas(
         database::Id<String>,
+        api::auth::register::RegisterIn, api::auth::confirm::ConfirmIn,
         api::auth::login::LoginIn, api::auth::login::LoginOut,
-        api::users::UserIn, api::users::UserOut,
+        api::users::UserOut,
     )),
     modifiers(&LoginToken),
 )]
