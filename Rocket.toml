@@ -1,5 +1,5 @@
 [debug.database]
-host = "localhost:8080"
+address = "ws://localhost:8080"
 username = "root"
 password = "root"
 

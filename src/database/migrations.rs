@@ -5,7 +5,7 @@ use rocket::info;
 use serde::Deserialize;
 use sha2::{Sha256, Digest};
 use std::{iter::zip, str};
-use surrealdb::{engine::remote::ws::Client, Surreal};
+use surrealdb::{engine::any::Any, Surreal};
 
 use super::Id;
 
@@ -66,7 +66,7 @@ pub enum Error {
 }
 
 /// Apply all open migrations to the specified database.
-pub async fn apply(db: &Surreal<Client>) -> Result<(), Error> {
+pub async fn apply(db: &Surreal<Any>) -> Result<(), Error> {
     // load current migrations and database state
     let migrations = parse_migrations(&MIGRATION_DIR)?;
     let state: Vec<MigrationHash> = db.query("

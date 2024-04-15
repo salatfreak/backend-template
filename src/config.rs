@@ -35,9 +35,9 @@ pub struct Config {
 /// Database config type.
 #[derive(Debug, Deserialize)]
 pub struct DatabaseConfig {
-    pub host: String,
-    pub username: String,
-    pub password: String,
+    pub address: String,
+    pub username: Option<String>,
+    pub password: Option<String>,
     pub namespace: String,
     pub database: String,
 }
