@@ -6,7 +6,7 @@ use std::marker::PhantomData;
 use rocket::{error, http::Status, request::{FromRequest, Outcome}, Request};
 use serde::Deserialize;
 
-use super::{Database, Id};
+use crate::database::{Database, Id};
 
 /// Generic login request guard.
 #[derive(Debug, Deserialize)]

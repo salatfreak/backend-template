@@ -2,6 +2,7 @@
 
 use rocket::fairing::AdHoc;
 
+pub mod login;
 pub mod auth;
 pub mod users;
 

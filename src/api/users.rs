@@ -4,9 +4,9 @@ use rocket::{get, http::Status, post, routes, serde::json::Json, Route};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::database::{login::{Admin, Login, Owner, User}, Database, Id};
+use crate::database::{Database, Id};
 use crate::mail::Mail;
-use super::auth::register::RegisterIn;
+use super::{auth::register::RegisterIn, login::{Admin, Login, Owner, User}};
 
 pub fn routes() -> Vec<Route> {
     routes![index, get, create]

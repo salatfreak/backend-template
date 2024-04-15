@@ -2,7 +2,8 @@
 
 use rocket::{http::Status, post};
 
-use crate::database::{login::{Login, User}, Database};
+use crate::database::Database;
+use super::super::login::{Login, User};
 
 #[utoipa::path(
     context_path = "/api/auth",

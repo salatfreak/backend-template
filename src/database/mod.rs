@@ -10,7 +10,6 @@ use surrealdb::{
 
 mod migrations;
 mod id;
-pub mod login;
 
 pub use id::Id;
 
