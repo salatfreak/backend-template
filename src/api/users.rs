@@ -28,6 +28,7 @@ pub struct UserOut {
         (status = 403, description = "Insufficient privileges"),
     ),
     security(("login" = [])),
+    tag = "users",
 )]
 
 #[get("/")]
@@ -46,6 +47,7 @@ async fn index(_user: Login<Admin>, db: &Database) -> Json<Vec<UserOut>> {
         (status = 403, description = "Insufficient privileges"),
     ),
     security(("login" = [])),
+    tag = "users",
 )]
 
 #[get("/<id>")]
@@ -72,6 +74,7 @@ async fn get(
         (status = 403, description = "Insufficient privileges"),
     ),
     security(("login" = [])),
+    tag = "users",
 )]
 
 #[post("/", data = "<data>")]

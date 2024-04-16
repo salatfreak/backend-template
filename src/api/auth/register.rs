@@ -29,6 +29,7 @@ pub struct RegisterIn {
     responses(
         (status = 200, description = "Registration maybe successful"),
     ),
+    tag = "authentication",
 )]
 
 #[post("/register", data = "<data>")]

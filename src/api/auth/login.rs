@@ -41,6 +41,7 @@ pub struct LoginOut {
         (status = 200, description = "Login successful", body = LoginOut),
         (status = 401, description = "Invalid login data"),
     ),
+    tag = "authentication",
 )]
 
 #[post("/login", data = "<data>")]

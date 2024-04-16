@@ -12,6 +12,7 @@ use super::super::login::{Login, User};
         (status = 401, description = "Invalid login session"),
     ),
     security(("login" = [])),
+    tag = "authentication",
 )]
 
 #[post("/logout")]

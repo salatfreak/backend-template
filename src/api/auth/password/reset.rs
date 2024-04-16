@@ -21,6 +21,7 @@ pub struct ResetIn {
     responses(
         (status = 200, description = "Reset maybe successful"),
     ),
+    tag = "password reset",
 )]
 
 #[post("/password/reset", data = "<data>")]

@@ -33,6 +33,7 @@ struct DbOutput {
     ), (
         status = 404, description = "Registration token not found",
     )),
+    tag = "authentication",
 )]
 
 #[post("/confirm", data = "<data>")]

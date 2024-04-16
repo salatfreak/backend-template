@@ -26,6 +26,7 @@ pub struct PasswordConfirmIn {
         ( status = 200, description = "Reset successful" ),
         ( status = 404, description = "Reset token not found" ),
     ),
+    tag = "password reset",
 )]
 
 #[post("/password/confirm", data = "<data>")]
