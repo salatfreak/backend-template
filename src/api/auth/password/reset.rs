@@ -28,8 +28,9 @@ pub async fn route(
 
         let $uid = (
             SELECT id FROM ONLY user
-            WHERE email = string::lowercase($email)
-            LIMIT 1
+            WHERE email = string::lowercase($email) AND id NOT IN (
+                SELECT user FROM password_reset
+            ).user LIMIT 1
         ).id;
 
         if $uid then (
