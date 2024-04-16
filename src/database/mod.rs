@@ -1,7 +1,7 @@
 //! SurrealDB database integration.
 
-
 use rocket::{error, fairing::AdHoc, State};
+use serde::Deserialize;
 use surrealdb::{
     engine::any::{self, Any},
     opt::auth::Root,
@@ -17,6 +17,10 @@ use crate::config::DatabaseConfig;
 
 /// Database type alias for abbreviation in route handlers.
 pub type Database = State<Surreal<Any>>;
+
+/// Empty struct to deserialize queries results to.
+#[derive(Deserialize)]
+pub struct Record {}
 
 /// Create and mount database to the rocket instance.
 pub fn mount(config: DatabaseConfig) -> AdHoc {
