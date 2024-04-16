@@ -7,6 +7,9 @@ password = "root"
 url = "smtp://localhost:2525"
 from = "backend@example.com"
 
+[debug.api]
+owner = "owner@example.com:$argon2id$v=19$m=19456,t=2,p=1$Cs/sCdezmQUdBcu2ZM76rQ$c6Hg3Z0XLtVakCfGr+xazw96dDH5dRXm68r/9Jea2ks"
+
 [debug.files]
 path = "static"
 

@@ -3,6 +3,7 @@
 use rocket::{
     figment::{self, providers::{Env, Serialized}},
     http::uncased::{Uncased, UncasedStr},
+    serde::json::json,
 };
 use serde::Deserialize;
 
@@ -12,6 +13,7 @@ pub fn load() -> Result<Config, figment::Error> {
         .join(Serialized::default("database.namespace", "default"))
         .join(Serialized::default("database.database", "default"))
         .join(Serialized::default("mail.pool_size", 1))
+        .join(Serialized::default("api", json!({})))
         .join(Serialized::default("files.path", "/usr/local/share/backend"))
         .join(Serialized::default("openapi.enable", false))
         .merge(Env::raw().map(convert_name).profile("global"))
@@ -28,6 +30,7 @@ fn convert_name(name: &UncasedStr) -> Uncased<'_> {
 pub struct Config {
     pub database: DatabaseConfig,
     pub mail: MailConfig,
+    pub api: APIConfig,
     pub files: FilesConfig,
     pub openapi: OpenAPIConfig,
 }
@@ -48,6 +51,12 @@ pub struct MailConfig {
     pub url: String,
     pub pool_size: u32,
     pub from: String,
+}
+
+/// API config type.
+#[derive(Debug, Deserialize)]
+pub struct APIConfig {
+    pub owner: Option<String>,
 }
 
 /// Files config type.

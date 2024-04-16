@@ -29,7 +29,7 @@ pub fn rocket() -> Rocket<Build> {
     let mut rocket = rocket::build()
         .attach(database::mount(config.database))
         .attach(mail::mount(config.mail, files_path.join("mail")))
-        .attach(api::mount())
+        .attach(api::mount(config.api))
         .attach(files::mount(files_path.join("http")));
 
     // mount OpenAPI spec and UI if requested
