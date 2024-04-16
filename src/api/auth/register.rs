@@ -1,27 +1,10 @@
 //! Register route.
 
 use rocket::{http::Status, post, serde::json::Json};
-use serde::{Serialize, Deserialize};
-use utoipa::ToSchema;
 use validator::Validate;
 
 use crate::{database::Database, mail::{Mail, Mailer}};
-
-/// Input data schema.
-#[derive(Serialize, Deserialize, Validate, ToSchema)]
-pub struct RegisterIn {
-    #[schema(example = "Alice")]
-    #[validate(length(min = 2))]
-    pub name: String,
-
-    #[schema(example = "alice@example.com")]
-    #[validate(email)]
-    pub email: String,
-
-    #[schema(example = "supersecret")]
-    #[validate(length(min = 8))]
-    pub password: String,
-}
+use super::components::RegisterIn;
 
 #[utoipa::path(
     context_path = "/api/auth",

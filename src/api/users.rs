@@ -6,7 +6,7 @@ use utoipa::ToSchema;
 
 use crate::database::{Database, Id};
 use crate::mail::Mail;
-use super::{auth::register::RegisterIn, login::{Admin, Login, Owner, User}};
+use super::{auth::components::RegisterIn, login::{Admin, Login, Owner, User}};
 
 pub fn routes() -> Vec<Route> {
     routes![index, get, create]

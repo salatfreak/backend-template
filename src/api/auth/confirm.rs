@@ -2,20 +2,10 @@
 
 use rocket::{http::Status, post, serde::json::Json};
 use serde::Deserialize;
-use utoipa::ToSchema;
 use validator::Validate;
 
 use crate::{database::Database, mail::Mail};
-
-use super::login::LoginOut;
-
-/// Input data schema.
-#[derive(Deserialize, Validate, ToSchema)]
-pub struct ConfirmIn {
-    #[schema(example = "Ct6LXRBOcKKPdJAiiTKYb6NgQJWhxyLL")]
-    #[validate(length(min = 32, max = 32))]
-    pub token: String,
-}
+use super::components::{ConfirmIn, LoginOut};
 
 /// Database response type.
 #[derive(Deserialize)]

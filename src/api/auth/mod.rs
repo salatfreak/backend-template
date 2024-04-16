@@ -1,5 +1,6 @@
 use rocket::{routes, Route};
 
+pub mod components;
 pub mod register;
 pub mod confirm;
 pub mod login;

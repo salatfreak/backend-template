@@ -1,38 +1,10 @@
 //! Login route.
 
 use rocket::{http::Status, post, serde::json::Json};
-use serde::{Deserialize, Serialize};
-use utoipa::ToSchema;
 use validator::Validate;
 
-use crate::database::{Database, Id};
-
-/// Input data schema.
-#[derive(Debug, Deserialize, Validate, ToSchema)]
-pub struct LoginIn {
-    #[schema(example = "alice@example.com")]
-    #[validate(email)]
-    pub email: String,
-
-    #[schema(example = "supersecret")]
-    #[validate(length(min = 8))]
-    pub password: String,
-}
-
-/// Output data schema.
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
-pub struct LoginOut {
-    pub id: Id<String>,
-
-    #[schema(example = "Alice")]
-    pub name: String,
-
-    #[schema(example = "user")]
-    pub role: String,
-
-    #[schema(example = "Ct6LXRBOcKKPdJAiiTKYb6NgQJWhxyLL")]
-    pub token: String,
-}
+use crate::database::Database;
+use super::components::{LoginIn, LoginOut};
 
 #[utoipa::path(
     context_path = "/api/auth",
