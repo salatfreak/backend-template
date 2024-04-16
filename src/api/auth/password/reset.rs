@@ -10,7 +10,7 @@ use super::components::ResetIn;
     context_path = "/api/auth",
     request_body = ResetIn,
     responses(
-        (status = 200, description = "Reset maybe successful"),
+        (status = 204, description = "Reset maybe successful"),
     ),
     tag = "password reset",
 )]
@@ -52,5 +52,5 @@ pub async fn route(
     });
 
     // return success status
-    Status::Ok
+    Status::NoContent
 }

@@ -1,4 +1,4 @@
-//! Confirm route.
+//! Registration confirmation route.
 
 use rocket::{http::Status, post, serde::json::Json};
 use serde::Deserialize;
@@ -18,8 +18,7 @@ struct DbOutput {
     context_path = "/api/auth",
     request_body = ConfirmIn,
     responses((
-        status = 200, description = "Successful registration",
-        body = LoginOut
+        status = 200, description = "Successful registration", body = LoginOut
     ), (
         status = 404, description = "Registration token not found",
     )),

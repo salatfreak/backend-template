@@ -41,5 +41,5 @@ pub async fn route(
         .expect("error executing login query");
 
     // return json response or unauthorized error
-    result.map(|r| Json(r)).ok_or(Status::Unauthorized)
+    result.map(Json).ok_or(Status::Unauthorized)
 }

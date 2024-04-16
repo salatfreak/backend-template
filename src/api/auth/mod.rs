@@ -1,3 +1,5 @@
+//! Authentication routes.
+
 use rocket::{routes, Route};
 
 pub mod components;
@@ -7,6 +9,7 @@ pub mod login;
 pub mod logout;
 pub mod password;
 
+/// Assemble authentication routes.
 pub fn routes() -> Vec<Route> {
     routes![
         register::route, confirm::route,

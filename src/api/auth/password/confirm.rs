@@ -1,4 +1,4 @@
-//! Password reset confirm route.
+//! Password reset confirmation route.
 
 use rocket::{http::Status, post, serde::json::Json};
 use validator::Validate;
@@ -10,8 +10,8 @@ use super::components::PasswordConfirmIn;
     context_path = "/api/auth",
     request_body = PasswordConfirmIn,
     responses(
-        ( status = 200, description = "Reset successful" ),
-        ( status = 404, description = "Reset token not found" ),
+        (status = 204, description = "Reset successful"),
+        (status = 404, description = "Reset token not found"),
     ),
     tag = "password reset",
 )]
@@ -43,6 +43,6 @@ pub async fn route(db: &Database, data: Json<PasswordConfirmIn>) -> Status {
     let success = result
         .expect("error fetching data from password reset confirmation query");
 
-    // Return success or not found status
-    if success { Status::Ok } else { Status::NotFound }
+    // return success or not found status
+    if success { Status::NoContent } else { Status::NotFound }
 }

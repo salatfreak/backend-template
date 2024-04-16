@@ -8,7 +8,7 @@ use super::super::login::{Login, User};
 #[utoipa::path(
     context_path = "/api/auth",
     responses(
-        (status = 200, description = "Logout successful"),
+        (status = 204, description = "Logout successful"),
         (status = 401, description = "Invalid login session"),
     ),
     security(("login" = [])),
@@ -29,5 +29,5 @@ pub async fn route(db: &Database, user: Login<User>) -> Status {
     let result = result.expect("error fetching logout query result");
 
     // return success or unauthorized error
-    if result { Status::Ok } else { Status::Unauthorized }
+    if result { Status::NoContent } else { Status::Unauthorized }
 }

@@ -1,4 +1,4 @@
-//! Register route.
+//! Registration route.
 
 use rocket::{http::Status, post, serde::json::Json};
 use validator::Validate;
@@ -10,7 +10,7 @@ use super::components::RegisterIn;
     context_path = "/api/auth",
     request_body = RegisterIn,
     responses(
-        (status = 200, description = "Registration maybe successful"),
+        (status = 204, description = "Registration maybe successful"),
     ),
     tag = "authentication",
 )]
@@ -54,5 +54,5 @@ pub async fn route(
     });
 
     // return success status
-    Status::Ok
+    Status::NoContent
 }
