@@ -1,23 +1,10 @@
 //! Password reset confirm route.
 
 use rocket::{http::Status, post, serde::json::Json};
-use serde::Deserialize;
-use utoipa::ToSchema;
 use validator::Validate;
 
 use crate::database::Database;
-
-/// Input data schema.
-#[derive(Deserialize, Validate, ToSchema)]
-pub struct PasswordConfirmIn {
-    #[schema(example = "Ct6LXRBOcKKPdJAiiTKYb6NgQJWhxyLL")]
-    #[validate(length(min = 32, max = 32))]
-    pub token: String,
-
-    #[schema(example = "supersecret")]
-    #[validate(length(min = 8))]
-    pub password: String,
-}
+use super::components::PasswordConfirmIn;
 
 #[utoipa::path(
     context_path = "/api/auth",

@@ -1,19 +1,10 @@
 //! Password reset route.
 
 use rocket::{http::Status, post, serde::json::Json};
-use serde::{Serialize, Deserialize};
-use utoipa::ToSchema;
 use validator::Validate;
 
 use crate::{database::Database, mail::{Mail, Mailer}};
-
-/// Input data schema.
-#[derive(Serialize, Deserialize, Validate, ToSchema)]
-pub struct ResetIn {
-    #[schema(example = "alice@example.com")]
-    #[validate(email)]
-    pub email: String,
-}
+use super::components::ResetIn;
 
 #[utoipa::path(
     context_path = "/api/auth",

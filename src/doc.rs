@@ -48,8 +48,8 @@ pub fn mount() -> AdHoc {
     ),
     components(schemas(
         database::Id<String>,
-        api::auth::password::reset::ResetIn,
-        api::auth::password::confirm::PasswordConfirmIn,
+        api::auth::password::components::ResetIn,
+        api::auth::password::components::PasswordConfirmIn,
         api::users::UserOut,
         api::auth::components::RegisterIn, api::auth::components::ConfirmIn,
         api::auth::components::LoginIn, api::auth::components::LoginOut,
