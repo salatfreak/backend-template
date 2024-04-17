@@ -3,14 +3,14 @@
 //! This package contains a template for building application backends using
 //! the Rocket framework.
 
-#![warn(rust_2018_idioms, missing_docs)]
+#![warn(rust_2018_idioms)]
 
 use std::path::PathBuf;
 use rocket::{figment, Build, Rocket};
 
 mod config;
 mod database;
-mod mail;
+pub mod mail;
 mod api;
 mod doc;
 mod files;

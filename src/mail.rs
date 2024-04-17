@@ -8,7 +8,9 @@ use lettre::{
     AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor,
 };
 use rocket::{error, fairing::AdHoc, State};
-use std::path::PathBuf;
+use std::{
+    path::PathBuf, sync::{mpsc::{channel, Receiver, Sender}, Arc, Mutex}
+};
 use tokio::{fs, io};
 
 use crate::config::MailConfig;
@@ -18,9 +20,8 @@ pub type Mail = State<Mailer>;
 
 /// Create and mount mailer to the rocket instance.
 pub fn mount(config: MailConfig, templates: PathBuf) -> AdHoc {
-    let conn = Mailer::new(
-        &config.url, config.pool_size, &config.from, templates
-    );
+    let MailConfig { url, pool_size, from } = config;
+    let conn = Mailer::new(&url, pool_size, &from, templates);
 
     AdHoc::try_on_ignite("SMTP Mailer", |rocket| async {
         match conn {
@@ -54,9 +55,41 @@ pub struct Email {
 /// Email connection and sending interface.
 #[derive(Clone)]
 pub struct Mailer {
-    transport: AsyncSmtpTransport::<Tokio1Executor>,
+    transport: Transport,
     from: Mailbox,
     templates: PathBuf,
+}
+
+/// Transport enum for production SMTP or dummy queue.
+#[derive(Clone)]
+enum Transport {
+    SMTP(AsyncSmtpTransport::<Tokio1Executor>),
+    Dummy(DummyTransport),
+}
+
+/// Dummy mail transport exclusively intended for testing.
+#[derive(Clone)]
+struct DummyTransport {
+    sender: Sender<Message>,
+    receiver: Arc<Mutex<Receiver<Message>>>,
+}
+
+impl DummyTransport {
+    /// Create new dummy transport.
+    fn new() -> Self {
+        let (sender, receiver) = channel();
+        Self { sender, receiver: Arc::new(Mutex::new(receiver)) }
+    }
+
+    /// Send message into the dummy transport.
+    fn send(&self, message: Message) {
+        self.sender.send(message).unwrap();
+    }
+
+    /// Receive next message from the dummy transport.
+    fn receive(&self) -> Message {
+        self.receiver.lock().unwrap().recv().unwrap()
+    }
 }
 
 impl Mailer {
@@ -64,15 +97,21 @@ impl Mailer {
     pub fn new(
         url: &str, pool_size: u32, from: &str, templates: PathBuf,
     ) -> Result<Self, Error> {
-        let transport = AsyncSmtpTransport::<Tokio1Executor>::from_url(url)?
-            .pool_config(PoolConfig::new().max_size(pool_size))
-            .build();
+        let transport = match url {
+            "dummy" => Transport::Dummy(DummyTransport::new()),
+            url => Transport::SMTP(
+                AsyncSmtpTransport::<Tokio1Executor>::from_url(url)?
+                    .pool_config(PoolConfig::new().max_size(pool_size))
+                    .build()
+            ),
+        };
 
         Ok(Self { transport, from: from.parse()?, templates })
     }
 
     /// Send email to specified receiver.
     pub async fn send(&self, to: &str, email: Email) -> Result<(), Error> {
+        // construct message object
         let message = Message::builder()
             .from(self.from.clone())
             .to(to.parse()?)
@@ -80,7 +119,14 @@ impl Mailer {
             .multipart(MultiPart::alternative_plain_html(
                 email.text, email.html,
             ))?;
-        self.transport.send(message).await?;
+
+        // send message or store it for testing
+        match &self.transport {
+            Transport::SMTP(tpt) => { tpt.send(message).await?; }
+            Transport::Dummy(tpt) => { tpt.send(message); }
+        }
+
+        // return successfully
         Ok(())
     }
 
@@ -103,5 +149,13 @@ impl Mailer {
 
         // construct email object
         Ok(Email { subject, text, html })
+    }
+
+    /// Receive next message if using dummy transport.
+    pub fn receive_dummy(&self) -> Result<Message, ()> {
+        match &self.transport {
+            Transport::Dummy(tpt) => Ok(tpt.receive()),
+            _ => Err(()),
+        }
     }
 }
