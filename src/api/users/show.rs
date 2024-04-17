@@ -17,6 +17,10 @@ use super::{super::login::{Admin, Login, User}, components::UserOut};
     tag = "users",
 )]
 
+/// GET /api/users/{id}
+///
+/// Retrieve user by their ID. Requires admin privileges except for retrieving
+/// data of currently logged in user.
 #[get("/<id>")]
 pub async fn route(
     user: Login<User>, db: &Database, id: &str

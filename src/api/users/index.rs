@@ -16,6 +16,9 @@ use super::{super::login::{Admin, Login}, components::UserOut};
     tag = "users",
 )]
 
+/// GET /api/users/
+///
+/// List all users. Requires admin privileges.
 #[get("/")]
 pub async fn route(_user: Login<Admin>, db: &Database) -> Json<Vec<UserOut>> {
     let users: Vec<UserOut> = db.select("user").await

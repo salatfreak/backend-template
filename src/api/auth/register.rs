@@ -15,6 +15,11 @@ use super::components::RegisterIn;
     tag = "authentication",
 )]
 
+/// POST /api/auth/register
+///
+/// Initiate new account registration and send verification email if email
+/// address is not already registered. The response will not expose whether
+/// that is the case to protect the users' privacy.
 #[post("/register", data = "<data>")]
 pub async fn route(
     db: &Database, mail: &Mail, data: Json<RegisterIn>

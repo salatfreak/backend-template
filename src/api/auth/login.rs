@@ -16,6 +16,9 @@ use super::components::{LoginIn, LoginOut};
     tag = "authentication",
 )]
 
+/// POST /api/auth/login
+///
+/// Create login session for already registered user.
 #[post("/login", data = "<data>")]
 pub async fn route(
     db: &Database, data: Json<LoginIn>,

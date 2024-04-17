@@ -15,6 +15,11 @@ use super::components::ResetIn;
     tag = "password reset",
 )]
 
+/// POST /api/auth/password/reset
+///
+/// Initiate password reset and send verification email if account with email
+/// address exists. The response will not expose whether that is the case to
+/// protect the users' privacy.
 #[post("/password/reset", data = "<data>")]
 pub async fn route(
     db: &Database, mail: &Mail, data: Json<ResetIn>

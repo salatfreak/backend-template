@@ -15,6 +15,9 @@ use super::super::login::{Login, User};
     tag = "authentication",
 )]
 
+/// POST /api/auth/logout
+///
+/// Destroy login session identified via API token in authorization header.
 #[post("/logout")]
 pub async fn route(db: &Database, user: Login<User>) -> Status {
     // delete login from database

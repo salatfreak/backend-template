@@ -18,6 +18,11 @@ use super::{super::login::{Login, Owner, User}, components::{UserIn, UserOut}};
     tag = "users",
 )]
 
+/// PATCH /api/users/{id}
+///
+/// Update user data by their ID. Requires owner privileges except for updating
+/// currently logged in user. The role field can only be changed with owner
+/// permissions and only accepts "user" or "admin".
 #[patch("/<id>", data = "<data>")]
 pub async fn route(
     user: Login<User>, db: &Database, id: &str, data: Json<UserIn>,

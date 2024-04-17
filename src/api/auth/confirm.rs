@@ -25,6 +25,10 @@ struct DbOutput {
     tag = "authentication",
 )]
 
+/// POST /api/auth/confirm
+///
+/// Confirm registration that has been initiated within the past 30 minutes,
+/// and send a confirmation email.
 #[post("/confirm", data = "<data>")]
 pub async fn route(
     db: &Database, mail: &Mail, data: Json<ConfirmIn>

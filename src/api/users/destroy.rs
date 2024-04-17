@@ -17,6 +17,10 @@ use super::super::login::{Login, Owner, User};
     tag = "users",
 )]
 
+/// DELETE /api/users/{id}
+///
+/// Delete user account by their ID. Requires owner privileges except when
+/// deleting the currently logged in user.
 #[delete("/<id>")]
 pub async fn route(user: Login<User>, db: &Database, id: &str) -> Status {
     // only allow deleting self if not owner

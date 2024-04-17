@@ -16,6 +16,9 @@ use super::components::PasswordConfirmIn;
     tag = "password reset",
 )]
 
+/// POST /api/auth/password/confirm
+///
+/// Confirm password reset that has been initiated within the past 30 minutes.
 #[post("/password/confirm", data = "<data>")]
 pub async fn route(db: &Database, data: Json<PasswordConfirmIn>) -> Status {
     // validate input
