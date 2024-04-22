@@ -7,7 +7,7 @@ use validator::Validate;
 use crate::database::Id;
 
 /// Registration input body.
-#[derive(Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, Validate, ToSchema)]
 pub struct RegisterIn {
     #[schema(example = "Alice")]
     #[validate(length(min = 2))]
@@ -23,7 +23,7 @@ pub struct RegisterIn {
 }
 
 /// Registration confirmation input body.
-#[derive(Deserialize, Validate, ToSchema)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct ConfirmIn {
     #[schema(example = "Ct6LXRBOcKKPdJAiiTKYb6NgQJWhxyLL")]
     #[validate(length(min = 32, max = 32))]

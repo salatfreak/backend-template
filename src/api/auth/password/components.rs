@@ -3,7 +3,7 @@ use utoipa::ToSchema;
 use validator::Validate;
 
 /// Password reset input body.
-#[derive(Serialize, Deserialize, Validate, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, Validate, ToSchema)]
 pub struct ResetIn {
     #[schema(example = "alice@example.com")]
     #[validate(email)]
@@ -11,7 +11,7 @@ pub struct ResetIn {
 }
 
 /// Password reset confirmation input body.
-#[derive(Deserialize, Validate, ToSchema)]
+#[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct PasswordConfirmIn {
     #[schema(example = "Ct6LXRBOcKKPdJAiiTKYb6NgQJWhxyLL")]
     #[validate(length(min = 32, max = 32))]
