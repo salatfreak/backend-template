@@ -13,14 +13,25 @@ fn test_auth() {
         "name": "Alice",
         "email": "alice",
         "password": "supersecret",
+        "nonce": 3730,
     })).dispatch();
     assert_eq!(resp.status(), Status::UnprocessableEntity);
+
+    // register with invalid nonce
+    let resp = client.post("/api/auth/register").json(&json!({
+        "name": "Alice",
+        "email": "alice@example.com",
+        "password": "supersecret",
+        "nonce": 1337,
+    })).dispatch();
+    assert_eq!(resp.status(), Status::PaymentRequired);
 
     // register
     let resp = client.post("/api/auth/register").json(&json!({
         "name": "Alice",
         "email": "alice@example.com",
         "password": "supersecret",
+        "nonce": 143970,
     })).dispatch();
     assert_eq!(resp.status(), Status::NoContent);
 
@@ -67,6 +78,7 @@ fn test_auth() {
     // change password
     let resp = client.post("/api/auth/password/reset").json(&json!({
         "email": "alice@example.com",
+        "nonce": 6542,
     })).dispatch();
     assert_eq!(resp.status(), Status::NoContent);
 

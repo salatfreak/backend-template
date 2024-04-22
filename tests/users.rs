@@ -12,7 +12,7 @@ fn test_user() {
     let owner = login(&client, "owner@example.com", "supersecret");
 
     // register user
-    let login = register(&client, "Alice", "alice@example.com", "supersecret");
+    let login = register_alice(&client);
     assert_eq!(login.role, "user");
     let header = format!("apikey {}", login.token);
 
@@ -86,7 +86,7 @@ fn test_admin() {
     let owner_header = format!("apikey {}", owner.token);
 
     // register user
-    let login = register(&client, "Alice", "alice@example.com", "supersecret");
+    let login = register_alice(&client);
     assert_eq!(login.role, "user");
     let header = format!("apikey {}", login.token);
 
@@ -136,7 +136,7 @@ fn test_owner() {
     let header = format!("apikey {}", owner.token);
 
     // register other user
-    let login = register(&client, "Alice", "alice@example.com", "supersecret");
+    let login = register_alice(&client);
     assert_eq!(login.role, "user");
 
     // change other user name and role
@@ -163,12 +163,13 @@ fn test_owner() {
     assert_eq!(resp.status(), Status::Unauthorized);
 }
 
-fn register(
-    client: &Client, name: &str, email: &str, password: &str
-) -> LoginResponse {
+fn register_alice(client: &Client) -> LoginResponse {
     // register
     let resp = client.post("/api/auth/register").json(&json!({
-        "name": name, "email": email, "password": password,
+        "name": "Alice",
+        "email": "alice@example.com",
+        "password": "supersecret",
+        "nonce": 143970,
     })).dispatch();
     assert_eq!(resp.status(), Status::NoContent);
 
