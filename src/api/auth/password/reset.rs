@@ -4,13 +4,14 @@ use rocket::{http::Status, post, serde::json::Json};
 use validator::Validate;
 
 use crate::{database::Database, mail::{Mail, Mailer}};
-use super::components::ResetIn;
+use super::{super::super::pow::POW, components::ResetIn};
 
 #[utoipa::path(
     context_path = "/api/auth",
     request_body = ResetIn,
     responses(
         (status = 204, description = "Reset maybe successful"),
+        (status = 402, description = "Invalid proof of work"),
     ),
     tag = "password reset",
 )]
@@ -18,11 +19,16 @@ use super::components::ResetIn;
 /// POST /api/auth/password/reset
 ///
 /// Initiate password reset and send verification email if account with email
-/// address exists. The response will not expose whether that is the case to
-/// protect the users' privacy.
+/// address exists and no password reset from within the last 30 minutes is
+/// pending. The response will not expose whether this is the case to protect
+/// the users' privacy. The request body needs to deliver a proof of work by
+/// making sure the binary representation of its SHA512 hash begins with 16
+/// zeros to achieve some protection against abuse by spammers. The example
+/// request body will e.g. be accepted if `"nonce": 77761` is added as its last
+/// field.
 #[post("/password/reset", data = "<data>")]
 pub async fn route(
-    db: &Database, mail: &Mail, data: Json<ResetIn>
+    db: &Database, mail: &Mail, data: POW<Json<ResetIn>>,
 ) -> Status {
     // validate input
     if let Err(_) = data.validate() { return Status::UnprocessableEntity; }

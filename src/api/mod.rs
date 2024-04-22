@@ -5,6 +5,7 @@ use surrealdb::{engine::any::Any, Surreal};
 
 use crate::config::APIConfig;
 
+pub mod pow;
 pub mod login;
 pub mod auth;
 pub mod users;
